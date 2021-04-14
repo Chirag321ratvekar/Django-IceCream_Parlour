@@ -1,0 +1,89 @@
+$ django-admin
+$ django-admin startproject  project_name --> it create folder of that name and also create respective files.
+$ python manage.py runserver 
+
+1 . starting :- tumchi request "project" chya 'urls.py' mdhe yete ani mg ti "app" chya 'urls.py' mdhe pathvli jate.
+# To Create a App :
+$ python manage.py ---> it is behaving like help me.
+$ python manahe.py startapp  app_name  -->it creates folder and respective files
+
+NOTE : settings.py is only in project folder not in app folder because it is for project satisfying.
+Mark Point : setting.py contain all infromation regarding which database it used(you'll also change database. it by default use sqlite) also which template store where,etc.
+
+2. App folder does not contain urls.py so we have to create it in app folder.
+3. Copy all file contains from "urls.py(of project folder)" and paste insite the "urls.py(of App)".
+4. Process : if anyone get request of "blank path" forward them to home page and that is present in the app's urls.py file
+     Changes: urls.py(of project) --->  path('',include('app_name.urls')) .. also import include in that
+                       urls.py(of app) ---->  from home import views ....   path("",views.index, name='home')
+                       views.py -------->  import HttpResponse ....  def index(request):  return HttpResponse("This is Home Page")
+[Request Flow --> projects_urls.py --------  App's_urls.py ----------  Project's_Views.py]
+[ path("Link or browsers url", views.function_name(from views.py), name='contacts') ]
+5 . Create new folders named as templates(which contain templates and for this we use render) and static(which contain images,pictures)
+      Static file also used for anything which you want to avail publically.
+        { In Settings.py }
+         a> For Static :-
+                                                            ...(From Django's Documentation -- static)
+           $ STATICFILES_DIRS = [
+    	 BASE_DIR / "static",    ... (till now is used for single file)
+    	 '/var/www/static/',       ... (to add multiple)
+              ]
+         b> For Templates :- 
+           $  'DIRS': [BASE_DIR / "templates", ],           
+6. create index.html inside the templates folder write some code --> make some changes in views.py(of project's)
+                                                                                                                               $ return render(request, 'index.hyml')
+         and if we want to pass variable then write (in views.py)
+            $ def index(request):
+	context = {
+		"variable1" = "This is first varibale",  ....(first variable)
+		"variable2" = "This is second varible" ...(second variable)
+	}                                  					..........(context is a python dictionary)
+	$ return render(request, 'index.hyml', context)
+        Then pass this variable in index.py as inside the <body> tag as like {{varibale1}}
+                                                                                                                                     {{variable2}}
+7. Go to Bootstrap.com website copy starter template and components which you want(Nevbar). paste inside the body of index.html.
+
+8. http//127.0.0.1:8000/admin ...(for administrator login)
+       Future Reference commands : 
+       $ python manage.py makemigrations
+       $ python manage.py migrate
+  #To create super user for administration :
+       $ python manage.py createspueruser
+       
+   #To change django admin text :
+         admin.site.site_header = "UMSRA Admin"
+         admin.site.site_title = "UMSRA Admin Portal"
+         admin.site.index_title = "Welcome to UMSRA Researcher Portal"
+9 . Creating a block : {% block name_ %}{% endblock name_ %}	
+      we created new file name base.html
+      we copy all contain from index.htmla and paste in base.html
+      we have to extend base.html
+     base.html ke top of index.html kam krega ...(because we render index.htmnl in views.py ..... so request go first to index.html then inside index he said extend base.html)
+10. Contact form : in the contact.html we have written the form template and give them "POST method" and action where you want(i have to give action on same page contact page) 
+
+11. Create your models :
+      makemigrations -- create change and store in a file.
+      migrate -- apply the pending changes created by makemigrations
+
+    For creating a model we have to firstly :
+     a. go to app's model.py file and create model of name conatct
+            $ class contact(models.Model):                                                      NOTE: My mistake in models.py is class contact(model.Models):  ...(M is capital)
+                    name = models.CharField(max_length=122)
+	desc = models.TextField()                                         ........(all components you have in the form)
+                    also have intfield ... go to google & fields in django.  
+     then run makemigrations cmd it shows no changes detected because you haven't register your model 
+12. register your model in app's admin.py file 
+      $ from app_name.models import file_name(contact.html in my case)
+          
+       $ admin.site.register(file_name)
+13. one more work to do :
+            inside app there is file name apps.py. 
+            app name is in that apps.py file copy that app name and 
+            paste in the settings.py at 
+            Installed_App = [ 
+                   'app's_name.apps.app_name(copy kelela)',
+            ]
+ 14. Then Run this commands 
+       $ python manage.py makemigrations ...(to django : changes are there make one file and store this changes)
+       $ python manage.py migrate  ...(from this command django : create 1 column/table)
+
+14. logic for to store input data from form to database
